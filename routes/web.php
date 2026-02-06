@@ -45,6 +45,8 @@ use App\Http\Controllers\Sys\GeneralSettingsController;
 Route::name('site.')->group(function () {
     Route::get('/', [SiteHome::class, 'index'])->name('home');
     Route::get('/about', [SiteAbout::class, 'index'])->name('about');
+    Route::get('/about/team', [SiteTeam::class, 'index'])->name('team.index');
+    Route::get('/about/team/{type}', [SiteTeam::class, 'type'])->name('team.type');
 
     // Blog (public)
     Route::get('/blog', [SiteBlog::class, 'index'])->name('blog');
