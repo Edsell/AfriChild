@@ -35,7 +35,7 @@
                 {{ $item?->heading ?: 'About AfriChild' }}
               </h2>
 
-              <div class="parallax-desc default-style text-left" style="margin-top: 14px;">
+              <div class="parallax-desc default-style text-left Justly" style="margin-top: 14px;">
                 {!! nl2br(e($item?->content ?: '')) !!}
               </div>
             </div>

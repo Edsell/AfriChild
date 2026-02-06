@@ -8,7 +8,7 @@
   content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
 />
 
-<title>{{ config('app.name') }} | {{ $title }}</title>
+<title>{{ $generalSettings->CompanyName }} | {{ $title }}</title>
 <meta name="description" content="" />
 
 {{-- CSRF (useful for ajax/forms) --}}

@@ -8,10 +8,8 @@
   $crumbTitle = $typeLabel;
 
   $crumbItems = [
-    ['label' => 'Home', 'url' => route('site.home')],
     ['label' => 'About', 'url' => route('site.about')],
     ['label' => 'Team', 'url' => route('site.team.index')],
-    ['label' => $typeLabel],
   ];
 
   // This matches your About page logic

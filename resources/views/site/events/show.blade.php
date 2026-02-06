@@ -27,7 +27,7 @@
             <hr class="af-divider">
           @endif
 
-          <article class="af-content">
+          <article class="af-content Justly">
             {!! $event->description !!}
           </article>
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{{ config('app.name') }} | {{ $title }}</title>
+  <title>{{ $generalSettings->CompanyName }} | {{ $title }}</title>
 
   {{-- Keep your template CSS links exactly, but point to /assets --}}
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">

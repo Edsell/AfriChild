@@ -2,7 +2,6 @@
   <div class="app-brand demo">
     <a href="{{ route('dashboard') }}" class="app-brand-link">
       <span class="app-brand-logo demo">
-        {{-- Keep Sneat svg or replace with your logo --}}
         <span class="text-primary">
          <img
                     src="{{ asset('assets/icon.png') }}"
@@ -11,7 +10,6 @@
                     class="rounded" />
         </span>
       </span>
-      {{-- <span class="app-brand-text demo menu-text fw-bold ms-2">{{ config('app.name', 'AfriChild') }}</span> --}}
     </a>
 
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -36,58 +34,51 @@
       <span class="menu-header-text">CMS Modules</span>
     </li>
 
-    {{-- Home --}}
     {{-- Home Page Dropdown --}}
-<li class="menu-item {{ request()->routeIs('sys.home-pages.*','sys.hero-slides.*','sys.services.*','sys.projects.*','sys.mission.*','sys.cta.*') ? 'active open' : '' }}">
-  <a href="javascript:void(0);" class="menu-link menu-toggle">
-    <i class="menu-icon tf-icons bx bx-home"></i>
-    <div data-i18n="Home Page">Home Page</div>
-  </a>
-
-  <ul class="menu-sub">
-    <li class="menu-item {{ request()->routeIs('sys.home-pages.*') ? 'active' : '' }}">
-      <a href="{{ route('sys.home-pages.index') }}" class="menu-link">
-        <div data-i18n="Settings">Settings</div>
+    <li class="menu-item {{ request()->routeIs('sys.home-pages.*','sys.hero-slides.*','sys.services.*','sys.mission.*','sys.cta.*','sys.partners.*') ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-home"></i>
+        <div data-i18n="Home Page">Home Page</div>
       </a>
-    </li>
 
-    <li class="menu-item {{ request()->routeIs('sys.hero-slides.*') ? 'active' : '' }}">
-      <a href="{{ route('sys.hero-slides.index') }}" class="menu-link">
-        <div data-i18n="Hero Slides">Hero Slides</div>
-      </a>
-    </li>
+      <ul class="menu-sub">
+        {{-- <li class="menu-item {{ request()->routeIs('sys.home-pages.*') ? 'active' : '' }}">
+          <a href="{{ route('sys.home-pages.index') }}" class="menu-link">
+            <div data-i18n="Settings">Settings</div>
+          </a>
+        </li> --}}
 
-    <li class="menu-item {{ request()->routeIs('sys.services.*') ? 'active' : '' }}">
-      <a href="{{ route('sys.services.index') }}" class="menu-link">
-        <div data-i18n="Services">Services</div>
-      </a>
-    </li>
+        <li class="menu-item {{ request()->routeIs('sys.hero-slides.*') ? 'active' : '' }}">
+          <a href="{{ route('sys.hero-slides.index') }}" class="menu-link">
+            <div data-i18n="Hero Slides">Hero Slides</div>
+          </a>
+        </li>
 
-    <li class="menu-item {{ request()->routeIs('sys.mission.*') ? 'active' : '' }}">
-      <a href="{{ route('sys.mission.index') }}" class="menu-link">
-        <div data-i18n="Mission">Mission</div>
-      </a>
-    </li>
-    <li class="menu-item {{ request()->routeIs('sys.projects.*') ? 'active' : '' }}">
-      <a href="{{ route('sys.projects.index') }}" class="menu-link">
-        <div data-i18n="Projects">Projects</div>
-      </a>
-    </li>
-    <li class="menu-item {{ request()->routeIs('sys.cta.*') ? 'active' : '' }}">
-      <a href="{{ route('sys.cta.index') }}" class="menu-link">
-        <div data-i18n="CTA">CTA</div>
-      </a>
-    </li>
+        <li class="menu-item {{ request()->routeIs('sys.services.*') ? 'active' : '' }}">
+          <a href="{{ route('sys.services.index') }}" class="menu-link">
+            <div data-i18n="Services">Services</div>
+          </a>
+        </li>
 
-    <li class="menu-item {{ request()->routeIs('sys.partners.*') ? 'active' : '' }}">
-  <a href="{{ route('sys.partners.index') }}" class="menu-link">
-    <div data-i18n="Partners">Partners</div>
-  </a>
-</li>
+        <li class="menu-item {{ request()->routeIs('sys.mission.*') ? 'active' : '' }}">
+          <a href="{{ route('sys.mission.index') }}" class="menu-link">
+            <div data-i18n="Mission">Mission</div>
+          </a>
+        </li>
 
-  </ul>
-</li>
+        <li class="menu-item {{ request()->routeIs('sys.cta.*') ? 'active' : '' }}">
+          <a href="{{ route('sys.cta.index') }}" class="menu-link">
+            <div data-i18n="CTA">CTA</div>
+          </a>
+        </li>
 
+        <li class="menu-item {{ request()->routeIs('sys.partners.*') ? 'active' : '' }}">
+          <a href="{{ route('sys.partners.index') }}" class="menu-link">
+            <div data-i18n="Partners">Partners</div>
+          </a>
+        </li>
+      </ul>
+    </li>
 
     {{-- About --}}
     <li class="menu-item {{ request()->routeIs('sys.about.*') ? 'active open' : '' }}">
@@ -107,6 +98,14 @@
       </a>
     </li>
 
+    {{-- Projects  --}}
+    <li class="menu-item {{ request()->routeIs('sys.projects.*') ? 'active open' : '' }}">
+      <a href="{{ \Route::has('sys.projects.index') ? route('sys.projects.index') : 'javascript:void(0);' }}"
+         class="menu-link">
+        <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+        <div class="text-truncate">Projects</div>
+      </a>
+    </li>
 
     {{-- Events --}}
     <li class="menu-item {{ request()->routeIs('sys.events.*') ? 'active open' : '' }}">
@@ -135,18 +134,14 @@
       </a>
     </li>
 
-@can('manage-users')
-<li class="menu-item {{ request()->routeIs('sys.users.*') ? 'active open' : '' }}">
-  <a href="{{ route('sys.users.index') }}" class="menu-link">
-    <i class="menu-icon tf-icons bx bx-user"></i>
-    <div data-i18n="Users">Users</div>
-  </a>
-</li>
-@endcan
-
-
-
-
+    @can('manage-users')
+      <li class="menu-item {{ request()->routeIs('sys.users.*') ? 'active open' : '' }}">
+        <a href="{{ route('sys.users.index') }}" class="menu-link">
+          <i class="menu-icon tf-icons bx bx-user"></i>
+          <div data-i18n="Users">Users</div>
+        </a>
+      </li>
+    @endcan
 
     {{-- Contact / Messages --}}
     <li class="menu-item {{ request()->routeIs('sys.contact.*') ? 'active open' : '' }}">
@@ -162,11 +157,11 @@
     </li>
 
     <li class="menu-item {{ request()->routeIs('sys.settings.*') ? 'active open' : '' }}">
-  <a href="{{ route('sys.settings.index') }}" class="menu-link">
-    <i class="menu-icon tf-icons bx bx-cog"></i>
-    <div data-i18n="General Settings">General Settings</div>
-  </a>
-</li>
+      <a href="{{ route('sys.settings.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cog"></i>
+        <div data-i18n="General Settings">General Settings</div>
+      </a>
+    </li>
 
     <li class="menu-item">
       <a href="{{ url('/') }}" target="_blank" class="menu-link">

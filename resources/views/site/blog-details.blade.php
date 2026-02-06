@@ -122,7 +122,7 @@
           @if($date) <span class="mx-1">•</span> {{ $date }} @endif
         </div>
 
-        <article class="post-content">
+        <article class="post-content Justly">
           {!! $item->content ?? '' !!}
         </article>
       </div>

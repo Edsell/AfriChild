@@ -1,4 +1,6 @@
-
+.Justly {
+    text-align: justify;
+}
 /* Nav Dropdown */
 /* About dropdown */
 .ac-has-dropdown{ position:relative; }
