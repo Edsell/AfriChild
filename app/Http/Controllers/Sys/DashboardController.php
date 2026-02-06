@@ -3,82 +3,170 @@
 namespace App\Http\Controllers\Sys;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // Later: replace these counts with real Eloquent model counts.
-        $stats = [
-            'pages'     => 0,
-            'blogs'     => 0,
-            'events'    => 0,
-            'gallery'   => 0,
-            'team'      => 0,
-            'messages'  => 0, // contact inquiries
+        // ---- Safe helpers (won't crash if model/table doesn't exist) ----
+        $countTable = function (?string $table, ?callable $query = null): int {
+            if (!$table || !Schema::hasTable($table)) return 0;
+            $q = DB::table($table);
+            if ($query) $query($q);
+            return (int) $q->count();
+        };
+
+        $latestFromTable = function (?string $table, int $limit = 5, string $orderCol = 'created_at', array $cols = ['*']) {
+            if (!$table || !Schema::hasTable($table)) return collect();
+            $orderCol = Schema::hasColumn($table, $orderCol) ? $orderCol : 'id';
+            return DB::table($table)->select($cols)->orderByDesc($orderCol)->limit($limit)->get();
+        };
+
+        // ---- Tables (adjust if your names differ) ----
+        // Common defaults in Laravel projects:
+        $tables = [
+            'pages'     => Schema::hasTable('pages') ? 'pages' : null,
+            'posts'     => Schema::hasTable('posts') ? 'posts' : (Schema::hasTable('blog_posts') ? 'blog_posts' : null),
+            'events'    => Schema::hasTable('events') ? 'events' : null,
+            'gallery'   => Schema::hasTable('galleries') ? 'galleries' : (Schema::hasTable('gallery_items') ? 'gallery_items' : null),
+            'team'      => Schema::hasTable('team_members') ? 'team_members' : (Schema::hasTable('teams') ? 'teams' : null),
+            'projects'  => Schema::hasTable('projects') ? 'projects' : null,
+            'messages'  => Schema::hasTable('contact_messages') ? 'contact_messages' : (Schema::hasTable('messages') ? 'messages' : null),
         ];
 
-        // Dashboard “modules” (cards)
+        // ---- Core stats (relevant for org: content + reach) ----
+        $stats = [
+            'pages'    => $countTable($tables['pages']),
+            'blogs'    => $countTable($tables['posts']),
+            'events'   => $countTable($tables['events']),
+            'projects' => $countTable($tables['projects']),
+            'gallery'  => $countTable($tables['gallery']),
+            'team'     => $countTable($tables['team']),
+            'messages' => $countTable($tables['messages']),
+        ];
+
+        // “This month” highlights (nice + meaningful)
+        $startOfMonth = Carbon::now()->startOfMonth();
+
+        $messagesThisMonth = $countTable($tables['messages'], function ($q) use ($startOfMonth, $tables) {
+            if ($tables['messages'] && Schema::hasColumn($tables['messages'], 'created_at')) {
+                $q->where('created_at', '>=', $startOfMonth);
+            }
+        });
+
+        $postsThisMonth = $countTable($tables['posts'], function ($q) use ($startOfMonth, $tables) {
+            if ($tables['posts'] && Schema::hasColumn($tables['posts'], 'created_at')) {
+                $q->where('created_at', '>=', $startOfMonth);
+            }
+        });
+
+        // ---- Recent activity blocks ----
+        $recentMessages = $latestFromTable(
+            $tables['messages'],
+            6,
+            'created_at',
+            ['id', 'name', 'email', 'subject', 'message', 'created_at']
+        );
+
+        $recentPosts = $latestFromTable(
+            $tables['posts'],
+            6,
+            'created_at',
+            ['id', 'title', 'slug', 'created_at']
+        );
+
+        // Upcoming events: prefer "start_date" or "event_date" if available
+        $upcomingEvents = collect();
+        if ($tables['events'] && Schema::hasTable($tables['events'])) {
+            $dateCol = Schema::hasColumn($tables['events'], 'start_date')
+                ? 'start_date'
+                : (Schema::hasColumn($tables['events'], 'event_date') ? 'event_date' : null);
+
+            $q = DB::table($tables['events'])->select(['id', 'title', 'slug', 'location', 'created_at']);
+            if ($dateCol) {
+                $q->addSelect($dateCol);
+                $q->whereDate($dateCol, '>=', Carbon::today())
+                  ->orderBy($dateCol, 'asc');
+            } else {
+                $q->orderByDesc('created_at');
+            }
+
+            $upcomingEvents = $q->limit(6)->get();
+        }
+
+        // ---- Module cards (counts + routes + icons) ----
+        // NOTE: keep routes aligned with your existing sys routes.
+        // If a route doesn't exist, the Blade already disables the button.
         $modules = [
             [
-                'title' => 'Home',
-                'desc'  => 'Manage homepage sections, hero, and highlights.',
-                'icon'  => 'bx bx-home-smile',
+                'title' => 'Pages',
+                'desc'  => 'Manage static pages content.',
+                'icon'  => 'bx bx-file',
+                'badge' => 'Content',
                 'count' => $stats['pages'],
-                'badge' => 'Sections',
-                'route' => 'sys.home.index', // create later
+                'route' => 'sys.pages.index', // change if yours differs
             ],
             [
-                'title' => 'About',
-                'desc'  => 'Update mission, vision, and organization story.',
-                'icon'  => 'bx bx-info-circle',
-                'count' => $stats['pages'],
-                'badge' => 'Page',
-                'route' => 'sys.about.index', // create later
-            ],
-            [
-                'title' => 'Blog',
-                'desc'  => 'Create posts, categories, tags, and media.',
+                'title' => 'Blog Posts',
+                'desc'  => 'Publish research, news & stories.',
                 'icon'  => 'bx bx-news',
+                'badge' => 'Content',
                 'count' => $stats['blogs'],
-                'badge' => 'Posts',
-                'route' => 'sys.blog.index', // create later
+                'route' => 'sys.posts.index',
             ],
             [
                 'title' => 'Events',
-                'desc'  => 'Publish events, schedules, and registrations.',
+                'desc'  => 'Workshops, forums & engagements.',
                 'icon'  => 'bx bx-calendar-event',
+                'badge' => 'Programs',
                 'count' => $stats['events'],
-                'badge' => 'Events',
-                'route' => 'sys.events.index', // create later
+                'route' => 'sys.events.index',
+            ],
+            [
+                'title' => 'Projects',
+                'desc'  => 'Track ongoing initiatives & outcomes.',
+                'icon'  => 'bx bx-bulb',
+                'badge' => 'Programs',
+                'count' => $stats['projects'],
+                'route' => 'sys.projects.index',
             ],
             [
                 'title' => 'Gallery',
-                'desc'  => 'Manage photos, albums, and highlights.',
+                'desc'  => 'Photos & media highlights.',
                 'icon'  => 'bx bx-images',
+                'badge' => 'Media',
                 'count' => $stats['gallery'],
-                'badge' => 'Items',
-                'route' => 'sys.gallery.index', // create later
+                'route' => 'sys.galleries.index',
             ],
             [
                 'title' => 'Team',
-                'desc'  => 'Manage team profiles and roles.',
+                'desc'  => 'People behind AfriChild.',
                 'icon'  => 'bx bx-group',
+                'badge' => 'People',
                 'count' => $stats['team'],
-                'badge' => 'Members',
-                'route' => 'sys.team.index', // create later
+                'route' => 'sys.team.index',
             ],
             [
-                'title' => 'Contact',
-                'desc'  => 'View messages and inquiries.',
+                'title' => 'Messages',
+                'desc'  => 'Contact form submissions.',
                 'icon'  => 'bx bx-envelope',
+                'badge' => 'Outreach',
                 'count' => $stats['messages'],
-                'badge' => 'Inbox',
-                'route' => 'sys.contact.index', // create later
+                'route' => 'sys.messages.index',
             ],
         ];
 
-        return view('sys.dashboard.index', compact('stats', 'modules'));
+        return view('sys.dashboard.index', [
+            'stats'            => $stats,
+            'modules'          => $modules,
+            'messagesThisMonth'=> $messagesThisMonth,
+            'postsThisMonth'   => $postsThisMonth,
+            'recentMessages'   => $recentMessages,
+            'recentPosts'      => $recentPosts,
+            'upcomingEvents'   => $upcomingEvents,
+        ]);
     }
 }
