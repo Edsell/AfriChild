@@ -1,0 +1,8 @@
+cat << 'EOF' > .gitignore
+ node_modules/
+dist/
+.cache/
+*.log
+composer.lock
+.env
+*.env

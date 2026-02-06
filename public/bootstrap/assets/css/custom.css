@@ -1,0 +1,73 @@
+/*====================
+Custom
+======================*/
+
+.Justly {
+    text-align:justify
+}
+.textCut {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+.textCut8 {
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+.tableStyle table,thead{
+    background-color: #2B2C40;
+
+}
+
+.tableStyle th {
+    color:#fff;
+
+}
+
+
+
+    .invoice-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.company-logo {
+    width: 50px;
+    height: auto;
+}
+
+.company-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.company-details p,
+.invoice-details p {
+    line-height: 1.6;
+}
+
+.invoice-number {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .company-info,
+    .invoice-meta {
+        text-align: center !important;
+        margin-bottom: 20px;
+    }
+
+    .company-info {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+    }
+}
