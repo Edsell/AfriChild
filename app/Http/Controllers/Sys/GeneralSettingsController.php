@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Sys;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralSettings;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class GeneralSettingsController extends Controller
 {
+  // Module directory (fixed for this controller)
+  private const MODULE_DIR = 'settings';
+
   public function index()
   {
     $items = GeneralSettings::latest()->paginate(10);
@@ -26,8 +28,12 @@ class GeneralSettingsController extends Controller
     $data = $this->validatedData($request);
 
     // Optional: allow logo/crumb on create too
-    if ($request->hasFile('Logo'))  $data['Logo']  = $this->storeFile($request->file('Logo'), 'settings');
-    if ($request->hasFile('Crumb')) $data['Crumb'] = $this->storeFile($request->file('Crumb'), 'settings');
+    if ($request->hasFile('Logo')) {
+      $data['Logo'] = $this->storeFile($request->file('Logo'));
+    }
+    if ($request->hasFile('Crumb')) {
+      $data['Crumb'] = $this->storeFile($request->file('Crumb'));
+    }
 
     $item = GeneralSettings::create($data);
 
@@ -38,7 +44,6 @@ class GeneralSettingsController extends Controller
 
   public function edit(GeneralSettings $setting)
   {
-    // keep variable name "setting" in route-model-binding, but use $item in view if you prefer
     $item = $setting;
     return view('sys.settings.edit', compact('item'));
   }
@@ -54,17 +59,18 @@ class GeneralSettingsController extends Controller
 
   public function destroy(GeneralSettings $setting)
   {
-    // delete files if exist
     $this->deleteFileIfExists($setting->Logo);
     $this->deleteFileIfExists($setting->Crumb);
 
     $setting->delete();
 
-    return redirect()->route('sys.settings.index')->with('success', 'Settings deleted.');
+    return redirect()
+      ->route('sys.settings.index')
+      ->with('success', 'Settings deleted.');
   }
 
   /**
-   * Upload Logo (separate action like your sample: UpdateLogo)
+   * Upload Logo
    */
   public function updateLogo(Request $request, GeneralSettings $setting)
   {
@@ -73,14 +79,14 @@ class GeneralSettingsController extends Controller
     ]);
 
     $this->deleteFileIfExists($setting->Logo);
-    $setting->Logo = $this->storeFile($request->file('Logo'), 'settings');
+    $setting->Logo = $this->storeFile($request->file('Logo'));
     $setting->save();
 
     return back()->with('success', 'Logo updated successfully.');
   }
 
   /**
-   * Upload Breadcrumb (Crumb) (separate action like your sample: UpdateCrumb)
+   * Upload Breadcrumb (Crumb)
    */
   public function updateCrumb(Request $request, GeneralSettings $setting)
   {
@@ -89,7 +95,7 @@ class GeneralSettingsController extends Controller
     ]);
 
     $this->deleteFileIfExists($setting->Crumb);
-    $setting->Crumb = $this->storeFile($request->file('Crumb'), 'settings');
+    $setting->Crumb = $this->storeFile($request->file('Crumb'));
     $setting->save();
 
     return back()->with('success', 'Breadcrumb image updated successfully.');
@@ -110,24 +116,46 @@ class GeneralSettingsController extends Controller
     ]);
   }
 
-  private function storeFile($file, string $dir): string
+  /**
+   * Store ONLY in: public/uploads/settings
+   * Returns: uploads/settings/xxxx.ext (use with asset())
+   */
+  private function storeFile($file): string
   {
-    // stored in storage/app/public/settings
-    $path = $file->store($dir, 'public');
-    return 'storage/' . $path; // easy to asset()
+    $dir = self::MODULE_DIR;
+
+    $destination = public_path("uploads/{$dir}");
+    if (!is_dir($destination)) {
+      @mkdir($destination, 0755, true);
+    }
+
+    $ext = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+    $filename = Str::uuid()->toString() . '.' . $ext;
+
+    $file->move($destination, $filename);
+
+    return "uploads/{$dir}/{$filename}";
   }
 
-  private function deleteFileIfExists(?string $publicPath): void
+  /**
+   * Delete ONLY from public/uploads/*
+   * If path doesn't start with "uploads/", do nothing.
+   */
+  private function deleteFileIfExists(?string $path): void
   {
-    if (!$publicPath) return;
+    if (!$path) return;
 
-    // Convert "storage/xxx" to "xxx" for disk('public')
-    $relative = str_starts_with($publicPath, 'storage/')
-      ? substr($publicPath, strlen('storage/'))
-      : $publicPath;
+    $path = ltrim(trim($path), '/');
 
-    if (Storage::disk('public')->exists($relative)) {
-      Storage::disk('public')->delete($relative);
+    // Strict: only touch uploads/
+    if (!str_starts_with($path, 'uploads/')) {
+      return;
+    }
+
+    $fullPath = public_path($path);
+
+    if (is_file($fullPath) && file_exists($fullPath)) {
+      @unlink($fullPath);
     }
   }
 }
