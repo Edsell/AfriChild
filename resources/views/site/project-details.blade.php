@@ -113,4 +113,4 @@
   </section>
 </main>
 
-@includeIf('site.foot.footer')
+@include('site.footers.foot')
