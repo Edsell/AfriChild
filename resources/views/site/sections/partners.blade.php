@@ -34,6 +34,31 @@
     @media (max-width: 991.98px){ #home-partners .partner-card{ flex-basis: calc((100% - 40px)/3);} }
     @media (max-width: 767.98px){ #home-partners .partner-card{ flex-basis: calc((100% - 20px)/2);} }
     @media (max-width: 575.98px){ #home-partners .partner-card{ flex-basis: 100%; } }
+
+    /* Added: bottom button (scoped) */
+    #home-partners .partners-cta{
+      text-align:center;
+      margin-top: 22px;
+    }
+    #home-partners .partners-cta .btn-partners{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      background:#DF0C81;
+      color:#fff;
+      font-weight:800;
+      border-radius:12px;
+      padding:12px 22px;
+      text-decoration:none;
+      border:0;
+      box-shadow:0 12px 24px rgba(0,0,0,.08);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    #home-partners .partners-cta .btn-partners:hover{
+      color:#fff;
+      filter: brightness(.96);
+      transform: translateY(-1px);
+    }
   </style>
 
   <div class="zozo-vc-main-row-inner vc-normal-section">
@@ -59,6 +84,13 @@
             </div>
           @endforeach
         </div>
+      </div>
+
+      {{-- Added: button to partners page --}}
+      <div class="partners-cta">
+        <a class="btn-partners" href="{{ route('site.partners') }}">
+          View All Partners <i class="fas fa-arrow-right"></i>
+        </a>
       </div>
 
     </div>

@@ -64,4 +64,14 @@ class HomeController extends Controller
 
         return view('site.home', compact('home', 'heroSlides', 'services', 'projects', 'mission', 'cta', 'team', 'partners', 'latestPosts'));
     }
+
+    public function partners()
+{
+    $partners = Partner::query()
+        ->where('is_active', true)
+        ->orderBy('sort_order')
+        ->paginate(12);
+
+    return view('site.partners', compact('partners'));
+}
 }

@@ -77,6 +77,9 @@ Route::name('site.')->group(function () {
         ->name('projects.show');
 
     Route::get('/team/{type?}', [SiteTeam::class, 'index'])->name('team');
+
+    Route::get('/partners', [SiteHome::class, 'partners'])->name('partners');
+
 });
 
 /*
