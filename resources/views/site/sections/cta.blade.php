@@ -2,6 +2,10 @@
   $bg = $cta?->background_image ? asset($cta->background_image) : null;
   $speed = $cta?->parallax_speed ?? 1.5;
   $items = ($cta?->items ?? collect())->where('is_active', true)->sortBy('sort_order');
+
+  // CTA title from section (admin "Back to Section" / CTA edit)
+  $ctaTitle = trim((string)($cta?->title ?? ''));
+  $ctaTitle = $ctaTitle !== '' ? $ctaTitle : 'Our Impact';
 @endphp
 
 @if($cta?->is_active)
@@ -43,6 +47,11 @@
           <div class="vc_column-inner">
             <div class="wpb_wrapper">
 
+              {{-- CTA TITLE (ALWAYS) --}}
+              <div class="afri-circle-title-wrap text-center">
+                <h2 class="afri-circle-title">{{ $ctaTitle }}</h2>
+              </div>
+
               <div class="vc_row wpb_row vc_inner vc_row-fluid">
                 <div class="zozo-vc-row-inner vc-inner-row-section clearfix">
                   <div class="wpb_column vc_column_inner vc_column_container vc_col-sm-12 typo-default">
@@ -59,7 +68,7 @@
                               @endphp
 
                               <div class="afri-circle-item" data-percent="{{ $p }}">
-                                <div class="afri-circle" role="img" aria-label="{{ $item->title }} {{ $p }} percent">
+                                <div class="afri-circle" role="img" aria-label="{{ $item->title }} {{ $p }}">
 
                                   {{-- SVG ring --}}
                                   <svg class="afri-circle-svg" viewBox="0 0 120 120" width="140" height="140" aria-hidden="true">
@@ -79,14 +88,14 @@
                                             stroke-dashoffset="0"></circle>
                                   </svg>
 
-                                  {{-- RUNNER (spins around while loading, stops at final %) --}}
+                                  {{-- RUNNER --}}
                                   <div class="afri-circle-runner" aria-hidden="true">
                                     <span class="afri-runner-dot"></span>
                                   </div>
 
-                                  {{-- value --}}
+                                  {{-- value (NUMBERS ONLY) --}}
                                   <div class="afri-circle-text">
-                                    <span class="afri-circle-value">0%</span>
+                                    <span class="afri-circle-value">0</span>
                                   </div>
                                 </div>
 
@@ -104,10 +113,23 @@
                 </div>
               </div>
 
-              {{-- SELF-CONTAINED CSS (no @push required) --}}
+              {{-- SELF-CONTAINED CSS --}}
               <style>
                 .afri-circle-cta { overflow: hidden; }
-                .afri-circle-cta .afri-circle-counter-wrap{ padding: 40px 0; }
+
+                .afri-circle-cta .afri-circle-title-wrap{ padding: 10px 0 10px; }
+                .afri-circle-cta .afri-circle-title{
+                  color: #fff;
+                  font-weight: 800;
+                  font-size: 34px;
+                  margin: 0 0 10px;
+                  text-shadow: 0 2px 10px rgba(0,0,0,.35);
+                }
+                @media (max-width: 575px){
+                  .afri-circle-cta .afri-circle-title{ font-size: 26px; }
+                }
+
+                .afri-circle-cta .afri-circle-counter-wrap{ padding: 30px 0 40px; }
 
                 .afri-circle-cta .afri-circle-grid{
                   display: grid;
@@ -184,12 +206,11 @@
                   text-shadow: 0 2px 10px rgba(0,0,0,.35);
                 }
 
-                /* Runner wrapper sits on top and rotates */
                 .afri-circle-cta .afri-circle-runner{
                   position: absolute;
-                  inset: 10px;              /* aligns dot on the ring edge visually */
+                  inset: 10px;
                   border-radius: 999px;
-                  transform: rotate(-90deg); /* start at top */
+                  transform: rotate(-90deg);
                   z-index: 2;
                   pointer-events: none;
                 }
@@ -207,7 +228,7 @@
                 }
               </style>
 
-              {{-- SELF-CONTAINED JS (no @push required) --}}
+              {{-- SELF-CONTAINED JS --}}
               <script>
                 (function () {
                   function init() {
@@ -230,7 +251,7 @@
                       const circumference = 2 * Math.PI * r;
 
                       progress.style.strokeDasharray = circumference + ' ' + circumference;
-                      progress.style.strokeDashoffset = String(circumference); // empty at start
+                      progress.style.strokeDashoffset = String(circumference);
 
                       el._afri = { percent, r, circumference, progress, valueEl, runner };
                     }
@@ -241,16 +262,15 @@
 
                       const { percent, circumference, progress, valueEl, runner } = el._afri;
 
-                      // If reduced motion, jump to final
                       if (prefersReduced) {
                         const off = circumference - (percent / 100) * circumference;
                         progress.style.strokeDashoffset = String(off);
-                        valueEl.textContent = percent + '%';
+                        valueEl.textContent = String(percent); // numbers only
                         runner.style.transform = 'rotate(' + (-90 + (percent/100)*360) + 'deg)';
                         return;
                       }
 
-                      const duration = 1300; // slightly smoother
+                      const duration = 1300;
                       const start = performance.now();
                       const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
@@ -259,14 +279,11 @@
                         const eased = easeOutCubic(t);
                         const current = Math.round(eased * percent);
 
-                        // ring
                         const off = circumference - (current / 100) * circumference;
                         progress.style.strokeDashoffset = String(off);
 
-                        // number
-                        valueEl.textContent = current + '%';
+                        valueEl.textContent = String(current); // numbers only
 
-                        // runner rotates around (start at -90deg)
                         const angle = -90 + (current / 100) * 360;
                         runner.style.transform = 'rotate(' + angle + 'deg)';
 
@@ -278,7 +295,6 @@
 
                     items.forEach(setup);
 
-                    // animate on view
                     if ('IntersectionObserver' in window) {
                       const obs = new IntersectionObserver((entries) => {
                         entries.forEach((e) => {

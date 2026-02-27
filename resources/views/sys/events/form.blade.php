@@ -67,7 +67,10 @@
 
         <div class="col-md-12">
           <label class="form-label">Description</label>
-          <textarea name="description" rows="6" class="form-control">{{ old('description',$event->description) }}</textarea>
+         <textarea id="event_description"
+          name="description"
+          rows="6"
+          class="form-control">{{ old('description',$event->description) }}</textarea>
         </div>
 
         <div class="col-md-6">
@@ -109,3 +112,28 @@
   </form>
 </div>
 @endsection
+
+
+@push('styles')
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css">
+@endpush
+
+@push('scripts')
+  {{-- Only include jQuery here if your admin layout doesn’t already include it --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const $el = $('#event_description');
+      if (!$el.length) return;
+
+      $el.summernote({
+        placeholder: 'Write the event description...',
+        tabsize: 2,
+        height: 260
+      });
+    });
+  </script>
+@endpush

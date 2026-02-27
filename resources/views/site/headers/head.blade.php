@@ -17,7 +17,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/icon.png') }}" />
   <meta name="msapplication-TileImage" content="{{ asset('assets/img/favicon/mstile-270x270.png') }}" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/svg.min.css" integrity="sha512-st1GzIoIPUBkxblWvRRTd+MkVD9R7hJpZ8Ea1er9AuDVRtFQjhtDtnGwoFXTQYfS1KoXy2QfQmCQicMxVLwzog==" crossorigin="anonymous" referrerpolicy="no-referrer" />

@@ -10,7 +10,7 @@
 @endphp
 
 @if($events->count())
-<section class="vc_row wpb_row vc_row-fluid vc_custom_1499673787702 vc-zozo-section typo-default">
+<section class="vc_row wpb_row vc_row-fluid vc_custom_1499673787702 vc-zozo-section typo-default mt-5">
   <div class="zozo-vc-main-row-inner vc-normal-section">
     <div class="wpb_column vc_main_column vc_column_container vc_col-sm-12 typo-default">
       <div class="vc_column-inner ">
@@ -33,7 +33,7 @@
                       <div class="event-item-img">
                         <a href="{{ route('site.events.show', $event->slug) }}" class="event-img-link" title="{{ $event->title }}">
                           <img loading="lazy" decoding="async" class="img-responsive"
-                               src="{{ $event->image_url }}" width="500" height="500" alt="{{ $event->title }}" />
+                               src="{{ $event->image_url }}" {{-- width="500" height="500"  --}} style="width: 100%;height:200px;object-fit:cover" alt="{{ $event->title }}" />
                         </a>
                       </div>
                     </div>

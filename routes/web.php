@@ -34,6 +34,7 @@ use App\Http\Controllers\Sys\CategoryController;
 use App\Http\Controllers\Sys\PartnerController;
 use App\Http\Controllers\Sys\UserController as SysUserController;
 use App\Http\Controllers\Sys\GeneralSettingsController;
+use App\Http\Controllers\Sys\DocumentationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -180,6 +181,18 @@ Route::middleware(['auth'])->group(function () {
         |--------------------------------------------------------------------------
         */
         // Route::resource('contact-messages', ContactMessageController::class)->only(['index','show','destroy']);
+
+        
+
+      
+        Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation.index');
+        //  Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation.index');
+
+        Route::get('/documentation/section/{key}', [DocumentationController::class, 'section'])
+        ->name('documentation.section');
+       
+
+
     });
 });
 

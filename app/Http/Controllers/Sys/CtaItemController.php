@@ -23,15 +23,17 @@ class CtaItemController extends Controller
     public function store(Request $request, CtaSection $cta)
     {
         $data = $request->validate([
-            'title' => ['required','string','max:255'],
-            'percent' => ['required','integer','min:0','max:100'],
-            'sort_order' => ['nullable','integer','min:0'],
-            'is_active' => ['nullable','boolean'],
+            'title'      => ['required', 'string', 'max:255'],
+            'percent'    => ['required', 'integer', 'min:0', 'max:100'],
+            'sort_order' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'is_active'  => ['sometimes', 'nullable', 'boolean'],
         ]);
 
         $data['cta_section_id'] = $cta->id;
         $data['sort_order'] = $data['sort_order'] ?? 0;
-        $data['is_active'] = (bool)$request->input('is_active', 0);
+
+        // checkbox-safe: present => true, absent => false
+        $data['is_active'] = $request->has('is_active');
 
         CtaItem::create($data);
 
@@ -51,14 +53,14 @@ class CtaItemController extends Controller
         abort_unless($item->cta_section_id === $cta->id, 404);
 
         $data = $request->validate([
-            'title' => ['required','string','max:255'],
-            'percent' => ['required','integer','min:0','max:100'],
-            'sort_order' => ['nullable','integer','min:0'],
-            'is_active' => ['nullable','boolean'],
+            'title'      => ['required', 'string', 'max:255'],
+            'percent'    => ['required', 'integer', 'min:0', 'max:100'],
+            'sort_order' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'is_active'  => ['sometimes', 'nullable', 'boolean'],
         ]);
 
         $data['sort_order'] = $data['sort_order'] ?? 0;
-        $data['is_active'] = (bool)$request->input('is_active', 0);
+        $data['is_active'] = $request->has('is_active');
 
         $item->update($data);
 

@@ -34,8 +34,11 @@
 
         <div class="col-12">
           <label class="form-label">Content</label>
-          <textarea name="content" class="form-control" rows="8"
-                    placeholder="Main about text...">{{ old('content', $item->content) }}</textarea>
+         <textarea id="about_content"
+          name="content"
+          class="form-control"
+          rows="8"
+          placeholder="Main about text...">{{ old('content', $item->content) }}</textarea>
         </div>
 
         <div class="col-md-6">
@@ -96,3 +99,28 @@
 
 </div>
 @endsection
+
+
+@push('styles')
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css">
+@endpush
+
+@push('scripts')
+  {{-- Only include jQuery here if your admin layout doesn’t already include it --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const $el = $('#about_content');
+      if (!$el.length) return;
+
+      $el.summernote({
+        placeholder: 'Main about text...',
+        tabsize: 2,
+        height: 260
+      });
+    });
+  </script>
+@endpush

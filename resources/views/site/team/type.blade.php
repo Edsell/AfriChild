@@ -40,7 +40,7 @@
 
       <div class="zozo-parallax-header">
         <div class="parallax-header content-style-default">
-          <h2 class="parallax-title">Our Team & Partners</h2>
+          <h2 class="parallax-title">Meet The People</h2>
           <div class="parallax-desc default-style" style="max-width: 820px;">
             Meet the people and organizations supporting AfriChild’s mission.
           </div>

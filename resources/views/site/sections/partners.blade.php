@@ -65,7 +65,7 @@
     <div class="container">
       <div class="zozo-parallax-header">
         <div class="parallax-header content-style-default">
-          <h2 class="parallax-title">Our Partners</h2>
+          <h2 class="parallax-title">Our Founding Partners</h2>
         </div>
       </div>
 

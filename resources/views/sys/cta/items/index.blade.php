@@ -26,7 +26,7 @@
                     @forelse($items as $item)
                     <tr>
                         <td>{{ $item->title }}</td>
-                        <td>{{ $item->percent }}%</td>
+                        <td>{{ $item->percent }}</td>
                         <td>{{ $item->sort_order }}</td>
                         <td>
                             @if($item->is_active)

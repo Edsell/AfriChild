@@ -65,10 +65,13 @@
         <small class="text-muted">You can select multiple images.</small>
       </div>
 
-        <div class="col-12">
-          <label class="form-label">Description</label>
-          <textarea class="form-control" name="description" rows="5">{{ old('description') }}</textarea>
-        </div>
+       <div class="col-12">
+        <label class="form-label">Description</label>
+        <textarea id="project_description"
+                  class="form-control"
+                  name="description"
+                  rows="6">{{ old('description') }}</textarea>
+      </div>
 
         <div class="col-12 d-flex gap-4">
           <label><input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}> Featured</label>
@@ -83,3 +86,28 @@
   <a class="btn btn-outline-secondary" href="{{ route('sys.projects.index') }}">Back</a>
 </form>
 @endsection
+
+
+@push('styles')
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css">
+@endpush
+
+@push('scripts')
+  {{-- only include jQuery here if your admin layout does NOT already include it --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const $el = $('#project_description');
+      if (!$el.length) return;
+
+      $el.summernote({
+        placeholder: 'Write the project description...',
+        tabsize: 2,
+        height: 260
+      });
+    });
+  </script>
+@endpush

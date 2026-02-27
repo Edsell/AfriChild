@@ -1,3 +1,4 @@
+
 @csrf
 
 @php
@@ -169,7 +170,12 @@
 
 <div class="mb-3">
   <label class="form-label">Content</label>
-  <textarea name="content" rows="10" class="form-control @error('content') is-invalid @enderror">{{ old('content', $post->content ?? '') }}</textarea>
+
+  <textarea id="content_editor"
+            name="content"
+            rows="10"
+            class="form-control @error('content') is-invalid @enderror">{{ old('content', $post->content ?? '') }}</textarea>
+
   @error('content') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
@@ -191,3 +197,29 @@
 
 <button class="btn btn-success">{{ $buttonText ?? 'Save' }}</button>
 <a href="{{ route('sys.posts.index') }}" class="btn btn-outline-secondary">Cancel</a>
+
+
+
+@push('styles')
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css">
+@endpush
+
+@push('scripts')
+  {{-- Only include jQuery if your admin layout doesn’t already have it --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const $el = $('#content_editor');
+      if (!$el.length) return;
+
+      $el.summernote({
+        placeholder: 'Write your post content here...',
+        tabsize: 2,
+        height: 320
+      });
+    });
+  </script>
+@endpush

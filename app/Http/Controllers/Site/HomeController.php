@@ -68,7 +68,7 @@ class HomeController extends Controller
     public function partners()
 {
     $partners = Partner::query()
-        ->where('is_active', true)
+        // ->where('is_active', true)
         ->orderBy('sort_order')
         ->paginate(12);
 

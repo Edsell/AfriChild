@@ -163,6 +163,13 @@
       </a>
     </li>
 
+    <li class="menu-item {{ request()->routeIs('sys.documentation.*') ? 'active' : '' }}">
+  <a href="{{ route('sys.documentation.index') }}" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-book-content"></i>
+    <div>Documentation</div>
+  </a>
+</li>
+
     <li class="menu-item">
       <a href="{{ url('/') }}" target="_blank" class="menu-link">
         <i class="menu-icon tf-icons bx bx-link-external"></i>

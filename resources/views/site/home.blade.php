@@ -11,8 +11,8 @@
                @include('site.sections.projects')
                @include('site.sections.mission')
                @include('site.sections.cta')
-               @include('site.sections.team')
-               @include('site.sections.events')
+               {{-- @include('site.sections.team') --}}
+               {{-- @include('site.sections.events') --}}
                @include('site.sections.blogs')
                {{-- @include('site.sections.testimonials') --}}
                @include('site.sections.partners')
